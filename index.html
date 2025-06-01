@@ -1,0 +1,397 @@
+{% extends 'base.html' %}
+{% block title %}Anime Recommender - Find Your Next Favorite Anime{% endblock %}
+
+{% block content %}
+<style>
+    .hero-section {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        position: relative;
+        background: var(--background-light);
+        overflow: hidden;
+        padding-top: 0.5rem;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        padding: 0.3rem 0;
+    }
+
+    .hero-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        align-items: center;
+    }
+
+    .hero-text {
+        animation: fadeInLeft 0.8s ease-out;
+    }
+
+    @keyframes fadeInLeft {
+        from {
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .hero-title {
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin-bottom: 0.3rem;
+        color: var(--text-primary);
+        line-height: 1.1;
+        position: relative;
+    }
+
+    .hero-title::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: -8px;
+        width: 60px;
+        height: 3px;
+        background: var(--text-secondary);
+        border-radius: 2px;
+    }
+
+    .hero-subtitle {
+        font-size: 1.1rem;
+        color: var(--text-secondary);
+        margin-bottom: 1.5rem;
+        line-height: 1.6;
+    }
+
+    .hero-image-container {
+        position: relative;
+        animation: fadeInRight 0.8s ease-out;
+        padding: 0.3rem;
+        background: var(--background-light);
+        border-radius: 20px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        max-width: 100%;
+        overflow: hidden;
+    }
+
+    @keyframes fadeInRight {
+        from {
+            opacity: 0;
+            transform: translateX(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .hero-image {
+        width: 100%;
+        height: auto;
+        max-height: 500px;
+        object-fit: contain;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+    }
+
+    .hero-image:hover {
+        transform: scale(1.01);
+    }
+
+    .hero-image-container:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .feature-section {
+        padding: 6rem 0;
+        background: var(--secondary-color);
+        position: relative;
+    }
+
+    .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .feature-card {
+        background: var(--background-light);
+        border-radius: 15px;
+        padding: 1.5rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        box-shadow: var(--card-shadow);
+    }
+
+    .feature-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: var(--text-secondary);
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-8px);
+        box-shadow: var(--hover-shadow);
+    }
+
+    .feature-card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .feature-icon {
+        width: 60px;
+        height: 60px;
+        background: var(--text-secondary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        color: white;
+        font-size: 1.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .feature-card:hover .feature-icon {
+        transform: rotateY(180deg);
+    }
+
+    .feature-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 0.8rem;
+    }
+
+    .feature-description {
+        color: var(--text-secondary);
+        line-height: 1.5;
+        font-size: 0.95rem;
+    }
+
+    .stats-section {
+        padding: 6rem 0;
+        background: var(--background-light);
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+        text-align: center;
+    }
+
+    .stat-card {
+        padding: 1.5rem;
+        background: var(--secondary-color);
+        border-radius: 12px;
+        transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--hover-shadow);
+    }
+
+    .stat-number {
+        font-size: 3rem;
+        font-weight: 800;
+        color: var(--text-secondary);
+        margin-bottom: 0.8rem;
+        line-height: 1;
+    }
+
+    .stat-label {
+        font-size: 1rem;
+        color: var(--text-secondary);
+        font-weight: 500;
+    }
+
+    .cta-section {
+        padding: 8rem 0;
+        background: linear-gradient(135deg, var(--text-secondary));
+        text-align: center;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .cta-content {
+        position: relative;
+        z-index: 2;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    .cta-title {
+        font-size: 2.6rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+    }
+
+    .cta-description {
+        font-size: 1.1rem;
+        margin-bottom: 1.5rem;
+        opacity: 0.9;
+    }
+
+    .cta-button {
+        display: inline-block;
+        padding: 0.8rem 2.5rem;
+        background: white;
+        color: var(--text-secondary);
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: 40px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .cta-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        color: var(--text-secondary);
+    }
+
+    @media (max-width: 992px) {
+        .hero-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .hero-image {
+            max-height: 350px;
+        }
+
+        .feature-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .hero-title {
+            font-size: 2.5rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .feature-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .hero-title {
+            font-size: 2rem;
+        }
+
+        .cta-title {
+            font-size: 2rem;
+        }
+    }
+</style>
+
+<div class="hero-section">
+    <div class="container">
+        <div class="hero-grid">
+            <div class="hero-text">
+                <h1 class="hero-title">Discover Your Next Favorite Anime</h1>
+                <p class="hero-subtitle">
+                    Experience the perfect anime recommendations tailored to your preferences. 
+                    Our AI-powered system understands your taste and suggests the best anime just for you.
+                </p>
+                <a href="{{ url_for('user') }}" class="btn btn-secondary btn-lg">
+                    <i class="fas fa-search me-2"></i>Start Discovering
+                </a>
+            </div>
+            <div class="hero-image-container">
+                <img src="{{ url_for('static', filename='image1.png') }}" 
+                     alt="Anime Collection" 
+                     class="hero-image">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="feature-section">
+    <div class="container">
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h3 class="feature-title">AI-Powered Recommendations</h3>
+                <p class="feature-description">
+                    Our advanced AI system analyzes your preferences to provide personalized anime suggestions that match your taste.
+                </p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <h3 class="feature-title">Instant Results</h3>
+                <p class="feature-description">
+                    Get immediate recommendations based on your description. No waiting, just instant anime suggestions.
+                </p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-star"></i>
+                </div>
+                <h3 class="feature-title">Curated Quality</h3>
+                <p class="feature-description">
+                    Each recommendation is carefully selected to ensure you get the best anime experience possible.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="stats-section">
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">10K+</div>
+                <div class="stat-label">Anime Titles</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">95%</div>
+                <div class="stat-label">Accuracy Rate</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">24/7</div>
+                <div class="stat-label">Instant Results</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="cta-section">
+    <div class="container">
+        <div class="cta-content">
+            <h2 class="cta-title">Ready to Find Your Next Anime?</h2>
+            <p class="cta-description">Start exploring our vast collection of anime recommendations today!</p>
+            <a href="{{ url_for('user') }}" class="cta-button">
+                <i class="fas fa-search me-2"></i>Get Started
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,249 @@
+{% extends 'base.html' %}
+{% block title %}Anime Recommendations{% endblock %}
+
+{% block content %}
+<style>
+    .search-section {
+        padding: 4rem 0;
+        background: linear-gradient(to bottom, var(--text-secondary));
+        margin-bottom: 2rem;
+    }
+
+    .search-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .search-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        color: var(--background-light);
+        text-align: center;
+    }
+
+    .search-form {
+        background: var(--background-light);
+        padding: 1rem;
+        border-radius: 15px;
+        box-shadow: var(--card-shadow);
+    }
+
+    .form-control {
+        background: var(--background-off);
+        border: 1px solid #e1e4e8;
+        color: var(--text-secondary);
+        padding: 1rem;
+        font-size: 1.1rem;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        background: var(--background-light);
+        border-color: var(--text-secondary);
+        box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.25);
+        color: var(--text-secondary);
+    }
+
+    .form-control::placeholder {
+        color: #6c757d;
+    }
+
+    .btn-primary {
+        background: var(--text-secondary);
+        border: none;
+        padding: 1rem 2rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background: #357abd;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(74, 144, 226, 0.3);
+    }
+
+    .recommendations-section {
+        padding: 3rem 0;
+        background: var(--background-off);
+    }
+
+    .recommendation-card {
+        background: var(--background-light);
+        border-radius: 10px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        border: none;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .recommendation-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+        border-color: transparent;
+    }
+
+    .anime-card img {
+        width: 100%;
+        height: 160px;
+        object-fit: cover;
+        border-bottom: 1px solid #e1e4e8;
+        transition: transform 0.3s ease;
+    }
+
+    .anime-card img:hover {
+        transform: scale(1.03);
+    }
+
+    .card-content {
+        padding: 1rem;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .card-title {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 0.4rem;
+    }
+
+    .card-subtitle {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--text-secondary);
+        margin-bottom: 0.4rem;
+    }
+
+    .card-rating {
+        display: inline-block;
+        background: var(--text-secondary);
+        color: var(--background-light);
+        padding: 0.2rem 0.7rem;
+        border-radius: 20px;
+        font-weight: 600;
+        margin-bottom: 0.8rem;
+        font-size: 0.8rem;
+        align-self: flex-start;
+    }
+
+    .card-synopsis {
+        color: var(--text-secondary);
+        line-height: 1.5;
+        font-size: 0.95rem;
+        margin-top: auto;
+    }
+
+    .flash-message {
+        background: var(--background-light);
+        border: 1px solid #e1e4e8;
+        color: var(--text-primary);
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+        box-shadow: var(--card-shadow);
+    }
+
+    @media (max-width: 768px) {
+        .search-title {
+            font-size: 2rem;
+        }
+
+        .recommendation-card {
+            margin-bottom: 1.5rem;
+        }
+
+        .anime-card img {
+            height: 130px;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+        }
+
+        .card-content {
+            padding: 1rem;
+        }
+
+        .card-rating {
+            font-size: 0.8rem;
+            padding: 0.2rem 0.6rem;
+        }
+
+        .card-synopsis {
+            font-size: 0.9rem;
+        }
+
+        .card-subtitle {
+            font-size: 0.9rem;
+        }
+
+        .genre-tag {
+            // ... existing code ...
+        }
+    }
+</style>
+
+<div class="search-section">
+    <div class="container">
+        <div class="search-container">
+            <h1 class="search-title">Find Your Next Anime</h1>
+            <form method="POST" class="search-form">
+                <div class="mb-4">
+                    <textarea name="description" class="form-control" rows="4" placeholder="Describe what kind of anime you're looking for..."></textarea>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search me-2"></i>Get Recommendations
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="recommendations-section">
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% if recommendations %}
+            <div class="row">
+                {% for anime in recommendations %}
+                    <div class="col-sm-6 col-md-4 col-lg-3">
+                        <div class="recommendation-card">
+                            <img src="{{ url_for('static', filename='images/' + anime.image) }}" 
+                                 alt="{{ anime.title }}" 
+                                 class="anime-card">
+                            <div class="card-content">
+                                <h3 class="card-title">{{ anime.title }}</h3>
+                                {% if anime.genres %}
+                                    <div class="card-subtitle">Genres: {{ anime.genres }}</div>
+                                {% endif %}
+                                <div class="card-rating">
+                                    <i class="fas fa-star me-2"></i>{{ anime.rating }}
+                                </div>
+                                <p class="card-synopsis">{{ anime.Synopsis }}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
