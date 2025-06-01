@@ -135,16 +135,17 @@ Title: [Anime Title]. Overview: [Synopsis and genre information]
 ## 📸 Screenshots
 
 ### Home Page
-[Add screenshot of the landing page here]
+![image](https://github.com/user-attachments/assets/2f4f50b9-36ce-453b-99dd-f579b4e9bbd2)
+![image](https://github.com/user-attachments/assets/579ec650-c331-47b5-95f6-5dfa47e90ecb)
+![image](https://github.com/user-attachments/assets/a4e6ef0f-c2c1-4259-82b9-4a9e7b2c7778)
 
 ### Search Interface
-[Add screenshot of the search form here]
+![image](https://github.com/user-attachments/assets/d1b1c6fb-fe59-4dca-a16d-fdeffebddee8)
 
 ### Recommendation Results
-[Add screenshot of the recommendation cards here]
+![image](https://github.com/user-attachments/assets/e3b30775-99fa-453c-a985-0b79a5bb0b96)
+![image](https://github.com/user-attachments/assets/a9818095-950c-499d-9882-9f93788f5cea)
 
-### Streamlit Interface
-[Add screenshot of the Streamlit app here]
 
 ## 🤖 How It Works
 
